@@ -7,6 +7,7 @@ export let customElement = (
     template,
     {
         _wires = {},
+        _attributes = {},
         _formAssociated = true,
         ...context
     } = {},
@@ -15,6 +16,7 @@ export let customElement = (
     {
         HTMLElement = globalThis.HTMLElement,
         document = globalThis.document,
+        CustomEvent = globalThis.CustomEvent,
     } = {},
 ) => {
 
@@ -54,6 +56,29 @@ export let customElement = (
                 thisObj: this.context_,
             })
             this.this = this.wires_.this
+        }
+
+        connectedCallback() {
+            let me = this
+            let ev = new CustomEvent('connected', { detail:null })
+            me.wires_.trigger(ev)
+        }
+
+        static get observedAttributes() {
+            return Object.keys(_attributes)
+        }
+
+        attributeChangedCallback(name, oldValue, value) {
+            let f = _attributes[name]
+            if (f && typeof f ==='function') {
+                f.call(this, value, oldValue)
+            }
+
+            let me = this
+            let ev = new CustomEvent('attribute_changed', {
+                detail:{name, value, oldValue,}
+            })
+            me.wires_.trigger(ev)
         }
     }
 }
