@@ -59,7 +59,7 @@ export let customElement = (
         }
 
         fire(ev) {
-            this.wires_.trigger(ev)
+            this.wires_.fire(ev)
             this.dispatchEvent(ev)
         }
 
