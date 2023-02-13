@@ -32,7 +32,6 @@ export let customElement = (
             this.build()
         }
 
-
         build(
             updateContext={},
         ) {
@@ -53,7 +52,7 @@ export let customElement = (
             t = null
 
             this.wires_ = wire(r, this.wiresConfig, {
-                thisObj: Object.assign({root_:this}, this.context_),
+                thisObj: this.context_,
             })
             this.this = this.wires_.this
         }
