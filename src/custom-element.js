@@ -64,6 +64,18 @@ export let customElement = (
             me.wires_.trigger(ev)
         }
 
+        disconnectedCallback() {
+            let me = this
+            let ev = new CustomEvent('disconnected', { detail:null })
+            me.wires_.trigger(ev)
+        }
+
+        adoptedCallback() {
+            let me = this
+            let ev = new CustomEvent('adopted', { detail:null })
+            me.wires_.trigger(ev)
+        }
+
         static get observedAttributes() {
             return Object.keys(_attributes)
         }

@@ -32,6 +32,10 @@ customElements.define('custom-element', customElement(
                     this.connected = true
                 },
 
+                disconnected: function() {
+                    this.disconnected = true
+                },
+
                 attribute_changed: function({attribute, newValue, oldValue}) {
                     this.attributeChanged = true
                 },
@@ -48,7 +52,7 @@ customElements.define('custom-element', customElement(
                 },
 
                 foo_changed: function(ev) {
-                    this.foo = ev.detail.value
+                    this.fooValue = ev.detail.value
                 },
             }
         },
@@ -105,6 +109,12 @@ Deno.test('custom element', () => {
     //
     el.setAttribute('foo', 'baz')
     assert(el.this.attributeChanged)
-    assert(el.this.foo === 'baz')
+    assert(el.this.fooValue === 'baz')
+
+    // check disconnected
+    //
+    document.body.removeChild(el)
+    assert(el.isConnected === false)
+    assert(el.this.disconnected)
 
 })
