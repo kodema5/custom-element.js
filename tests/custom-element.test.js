@@ -22,7 +22,7 @@ customElements.define('custom-element', customElement(
         _attributes: {
             foo:function(value) {
                 var ev = new CustomEvent('foo_changed', {detail:{ value}})
-                this.this.trigger_(ev)
+                this.root_.fire(ev)
             },
         },
 
@@ -45,6 +45,11 @@ customElements.define('custom-element', customElement(
                 _id: 'button',
                 click: function(ev) {
                     this.buttonClicked++
+
+                    // to dispatch to root from wires
+                    //
+                    var ce = new CustomEvent('button_clicked', {detail:null})
+                    this.root_.fire(ce)
                 },
 
                 direct_event: function(ev) {
@@ -95,13 +100,17 @@ Deno.test('custom element', () => {
 
     // call method in scope
     //
+    el.addEventListener('button_clicked', () => {
+        el.isButtonClicked = true
+    })
     el.this.foo()
     assert(el.this.buttonClicked===1)
+    assert(el.isButtonClicked)
 
     // to target listeners of special type
     //
-    var ev = new CustomEvent('direct_event', {detail:'world'})
-    el.this.trigger_(ev )
+    var ev = new CustomEvent('direct_event', {detail:'world', bubble:true})
+    el.fire(ev)
     assert(el.this.directValue==='world')
 
 

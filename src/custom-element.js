@@ -26,7 +26,7 @@ export let customElement = (
         constructor() {
             super()
             this.template_ = template
-            this.context_ = context
+            this.context_ = Object.assign({root_:this}, context)
             this.wiresConfig = _wires
             this.attachShadow({ mode:'open' })
             this.build()
@@ -53,27 +53,32 @@ export let customElement = (
             t = null
 
             this.wires_ = wire(r, this.wiresConfig, {
-                thisObj: this.context_,
+                thisObj: Object.assign({root_:this}, this.context_),
             })
             this.this = this.wires_.this
+        }
+
+        fire(ev) {
+            this.wires_.trigger(ev)
+            this.dispatchEvent(ev)
         }
 
         connectedCallback() {
             let me = this
             let ev = new CustomEvent('connected', { detail:null })
-            me.wires_.trigger(ev)
+            me.fire(ev)
         }
 
         disconnectedCallback() {
             let me = this
             let ev = new CustomEvent('disconnected', { detail:null })
-            me.wires_.trigger(ev)
+            me.fire(ev)
         }
 
         adoptedCallback() {
             let me = this
             let ev = new CustomEvent('adopted', { detail:null })
-            me.wires_.trigger(ev)
+            me.fire(ev)
         }
 
         static get observedAttributes() {
@@ -83,14 +88,14 @@ export let customElement = (
         attributeChangedCallback(name, oldValue, value) {
             let f = _attributes[name]
             if (f && typeof f ==='function') {
-                f.call(this, value, oldValue)
+                f.call(this.context_, value, oldValue)
             }
 
             let me = this
             let ev = new CustomEvent('attribute_changed', {
                 detail:{name, value, oldValue,}
             })
-            me.wires_.trigger(ev)
+            me.fire(ev)
         }
     }
 }
