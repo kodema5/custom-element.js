@@ -1,11 +1,18 @@
 export { tmpl, } from './deps.js'
 import { wire, } from './deps.js'
 
+export let customElementDefaults = {
+    header: '',
+    footer: '',
+}
+
 // builds a wired custom-element from a string template
 //
 export let customElement = (
     template,
     {
+        _header = customElementDefaults.header,
+        _footer = customElementDefaults.footer,
         _wires = {},
         _attributes = {},
         _formAssociated = true,
@@ -47,7 +54,11 @@ export let customElement = (
             }
 
             let t = document.createElement('template')
-            t.innerHTML = template.build(this.context_)
+            t.innerHTML = [
+                _header,
+                template.build(this.context_),
+                _footer
+            ].filter(Boolean).join('')
             r.appendChild(t.content.cloneNode(true))
             t = null
 
