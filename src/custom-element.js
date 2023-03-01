@@ -33,7 +33,12 @@ export let customElement = (
         constructor() {
             super()
             this.template_ = template
-            this.context_ = Object.assign({root_:this}, context)
+            this.context_ = Object.assign({
+                root_:this,
+                build_: this.build.bind(this),
+                fire_: this.fire.bind(this),
+            }, context)
+
             this.wiresConfig = _wires
             this.attachShadow({ mode:'open' })
             this.build()

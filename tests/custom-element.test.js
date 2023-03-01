@@ -37,11 +37,10 @@ customElements.define('custom-element', customElement(
         _attributes: {
 
             // triggered by attribute changed
-            // use this.root_.fire(ev) to publish a wire event
             //
             foo:function(value) {
                 var ev = new CustomEvent('foo_changed', {detail:{ value}})
-                this.root_.fire(ev)
+                this.fire_(ev)
             },
         },
 
@@ -77,7 +76,7 @@ customElements.define('custom-element', customElement(
                     // to dispatch to root from wires
                     //
                     var ce = new CustomEvent('button_clicked', {detail:null})
-                    this.root_.fire(ce)
+                    this.fire_(ce)
                 },
 
                 // triggered by el.fire(....) from outside

@@ -25,6 +25,8 @@ let el = wireElement(
             '.': {
                 direct_event: function(ev) {
                     this.msg = ev.detail
+                    // rebuild template
+                    this.build_()
                 }
             },
 
@@ -59,8 +61,6 @@ Deno.test('wire element', () => {
     el.fire(ev)
     assert(el.this.msg == 'world')
 
-    // rebuild element
-    el.build()
     assert(el.root.innerHTML.indexOf('<button>world</button>')>=0)
 
     // has button still
