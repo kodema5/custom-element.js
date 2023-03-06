@@ -36,7 +36,10 @@ let WiredElement = class {
             fire_: this.fire.bind(this),
         }, context)
 
-        this.wiresConfig = _wires
+        this.wiresConfig = typeof(_wires)==='function'
+            ? _wires
+            : (() => _wires)
+
         this.document = document
         this.build()
     }
@@ -60,9 +63,10 @@ let WiredElement = class {
         r.appendChild(t.content.cloneNode(true))
         t = null
 
-        this.wires_ = wire(r, this.wiresConfig, {
-            thisObj: this.context_,
-        })
+        this.wires_ = wire(r,
+            this.wiresConfig.call(this.context_, this),
+            { thisObj: this.context_, })
+
         this.this = this.wires_.this
     }
 

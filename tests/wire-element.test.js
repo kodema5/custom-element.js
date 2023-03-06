@@ -21,20 +21,22 @@ let el = wireElement(
     document.getElementById('root'),
     tmpl`<form><button>${function(msg) { return msg }}</button></form>`,
     {
-        _wires: {
-            '.': {
-                direct_event: function(ev) {
-                    this.msg = ev.detail
-                    // rebuild template
-                    this.build_()
-                }
-            },
-
-            'button': {
-                _id: 'button',
-                click: function(ev) {
-                    this.buttonClicked++
+        _wires: function() {
+            return {
+                '.': {
+                    direct_event: function(ev) {
+                        this.msg = ev.detail
+                        // rebuild template
+                        this.build_()
+                    }
                 },
+
+                'button': {
+                    _id: 'button',
+                    click: function(ev) {
+                        this.buttonClicked++
+                    },
+                }
             }
         },
         buttonClicked: 0,

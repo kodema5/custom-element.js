@@ -39,7 +39,10 @@ export let customElement = (
                 fire_: this.fire.bind(this),
             }, context)
 
-            this.wiresConfig = _wires
+            this.wiresConfig = typeof(_wires)==='function'
+                ? _wires
+                : (() => _wires)
+
             this.attachShadow({ mode:'open' })
             this.build()
         }
@@ -67,9 +70,10 @@ export let customElement = (
             r.appendChild(t.content.cloneNode(true))
             t = null
 
-            this.wires_ = wire(r, this.wiresConfig, {
-                thisObj: this.context_,
-            })
+            this.wires_ = wire(r,
+                this.wiresConfig.call(this.context_, this),
+                { thisObj: this.context_,})
+
             this.this = this.wires_.this
         }
 
